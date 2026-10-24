@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Simran, Please Forgive Me 🥺❤️ — Mohit's Apology & Proposal</title>
+  <meta name="description" content="A cute interactive Bubu & Dudu style apology story game from Mohit to Simran with animated stickers, romantic shayari, mini-games, and a forever proposal.">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary-pink: #ff4d6d;
+      --primary-dark: #c9184a;
+      --soft-pink: #ffb3c1;
+      --cream-bg: #fff0f3;
+      --card-bg: rgba(255, 255, 255, 0.94);
+      --text-dark: #590d22;
+      --text-soft: #800f2f;
+      --gold: #ffb703;
+      --shadow-pink: rgba(255, 77, 109, 0.28);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    body {
+      font-family: 'Nunito', 'Quicksand', sans-serif;
+      background: linear-gradient(135deg, #ffd6e0 0%, #fff0f3 50%, #ffe5ec 100%);
+      color: var(--text-dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow-x: hidden;
+      padding: 16px 12px;
+    }
+
+    /* Ambient Floating Canvas for Hearts */
+    #bg-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Top Floating Game HUD */
+    .top-bar {
+      position: fixed;
+      top: 14px;
+      left: 0;
+      width: 100%;
+      max-width: 500px;
+      padding: 0 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+      margin: 0 auto;
+      right: 0;
+    }
+
+    .pill-badge {
+      background: rgba(255, 255, 255, 0.92);
+      border: 2px solid var(--soft-pink);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 15px rgba(255, 77, 109, 0.15);
+      backdrop-filter: blur(8px);
+    }
+
+    .audio-btn {
+      background: rgba(255, 255, 255, 0.92);
+      border: 2px solid var(--soft-pink);
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.2rem;
+      box-shadow: 0 4px 15px rgba(255, 77, 109, 0.15);
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .audio-btn:hover {
+      transform: scale(1.12);
+      background: #ffe5ec;
+    }
+
+    /* Progress Indicators */
+    .progress-bar {
+      display: flex;
+      gap: 6px;
+    }
+    .p-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: rgba(255, 77, 109, 0.25);
+      transition: all 0.35s ease;
+    }
+    .p-dot.active {
+      width: 24px;
+      border-radius: 999px;
+      background: var(--primary-pink);
+      box-shadow: 0 0 10px rgba(255, 77, 109, 0.6);
+    }
+    .p-dot.passed {
+      background: var(--soft-pink);
+    }
+
+    /* Main Container Card */
+    .game-card-wrapper {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 440px;
+      margin-top: 50px;
+      margin-bottom: 20px;
+    }
+
+    .scene-card {
+      background: var(--card-bg);
+      border: 3px solid rgba(255, 255, 255, 0.9);
+      border-radius: 36px;
+      padding: 26px 20px 24px;
+      box-shadow: 0 20px 50px var(--shadow-pink), 0 0 0 8px rgba(255, 255, 255, 0.6);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      display: none;
+      animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    .scene-card.active {
+      display: block;
+    }
+
+    @keyframes popIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.9) translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    /* Chapter Title & Header */
+    .chapter-tag {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--primary-pink);
+      background: #ffe5ec;
+      padding: 4px 14px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+
+    .scene-title {
+      font-size: 1.65rem;
+      font-weight: 900;
+      color: var(--text-dark);
+      line-height: 1.25;
+      margin-bottom: 6px;
+    }
+    .scene-title span {
+      color: var(--primary-pink);
+      text-decoration: underline wavy var(--soft-pink) 2px;
+    }
+
+    .scene-subtitle {
+      font-size: 0.95rem;
+      color: var(--text-soft);
+      font-weight: 600;
+      margin-bottom: 14px;
+      line-height: 1.4;
+    }
+
+    /* Sticker / GIF Mascot Stage */
+    .sticker-box {
+      position: relative;
+      width: 190px;
+      height: 190px;
+      margin: 8px auto 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 28px;
+      background: radial-gradient(circle, #fff 40%, #ffe8ed 100%);
+      box-shadow: 0 10px 25px rgba(255, 77, 109, 0.15);
+      border: 2px dashed rgba(255, 77, 109, 0.3);
+      cursor: pointer;
+      transition: transform 0.25s ease;
+    }
+    .sticker-box:hover {
+      transform: scale(1.03);
+    }
+
+    .sticker-img {
+      max-width: 90%;
+      max-height: 90%;
+      object-fit: contain;
+      border-radius: 20px;
+      pointer-events: none;
+    }
+
+    /* Tear Wipe Interactive Layer */
+    .tear-layer {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 28px;
+      background: rgba(255, 255, 255, 0.1);
+      z-index: 5;
+    }
+    .interactive-tear {
+      position: absolute;
+      font-size: 1.8rem;
+      animation: dropTear 1.2s infinite ease-in;
+      filter: drop-shadow(0 2px 5px rgba(0, 150, 255, 0.4));
+    }
+    @keyframes dropTear {
+      0% { transform: translateY(-10px) scale(0.8); opacity: 0; }
+      40% { opacity: 1; }
+      100% { transform: translateY(35px) scale(1.2); opacity: 0; }
+    }
+
+    .wipe-hint {
+      position: absolute;
+      bottom: -22px;
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      background: var(--primary-pink);
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 3px 12px;
+      border-radius: 999px;
+      box-shadow: 0 3px 10px rgba(255, 77, 109, 0.3);
+      animation: bounceHint 1.2s infinite ease-in-out;
+    }
+    @keyframes bounceHint {
+      0%, 100% { transform: translate(-50%, 0); }
+      50% { transform: translate(-50%, -4px); }
+    }
+
+    /* Dialogue Speech Bubble */
+    .speech-bubble {
+      background: #fff;
+      border: 2px solid var(--soft-pink);
+      border-radius: 20px;
+      padding: 14px 16px;
+      margin: 14px 0 18px;
+      position: relative;
+      font-size: 0.96rem;
+      color: var(--text-dark);
+      font-weight: 700;
+      line-height: 1.5;
+      box-shadow: 0 6px 18px rgba(255, 77, 109, 0.08);
+    }
+    .speech-bubble::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 0 10px 10px 10px;
+      border-style: solid;
+      border-color: transparent transparent var(--soft-pink) transparent;
+    }
+    .speech-bubble::after {
+      content: '';
+      position: absolute;
+      top: -7px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 0 8px 8px 8px;
+      border-style: solid;
+      border-color: transparent transparent #fff transparent;
+    }
+
+    /* Romantic English Poetry / Quotes Cards */
+    .quote-box {
+      background: linear-gradient(135deg, #fff5f7, #ffffff);
+      border-left: 5px solid var(--primary-pink);
+      border-radius: 16px;
+      padding: 14px 16px;
+      margin: 10px 0;
+      text-align: left;
+      box-shadow: 0 4px 12px rgba(255, 77, 109, 0.08);
+      position: relative;
+    }
+    .quote-badge {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .quote-text {
+      font-size: 0.95rem;
+      font-style: italic;
+      color: #590d22;
+      line-height: 1.55;
+      font-weight: 600;
+    }
+
+    /* Buttons */
+    .btn-row {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+      margin-top: 10px;
+      position: relative;
+    }
+
+    .btn-main {
+      font-family: inherit;
+      font-size: 1.05rem;
+      font-weight: 800;
+      padding: 15px 24px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: linear-gradient(120deg, #ff4d6d, #ff758f);
+      color: white;
+      box-shadow: 0 10px 25px rgba(255, 77, 109, 0.4);
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .btn-main:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 14px 30px rgba(255, 77, 109, 0.55);
+    }
+    .btn-main:active {
+      transform: scale(0.96);
+    }
+
+    .btn-sub {
+      background: #fff;
+      color: var(--text-dark);
+      border: 2px solid var(--soft-pink);
+      padding: 11px 20px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 0.92rem;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      transition: all 0.2s ease;
+    }
+    .btn-sub:hover {
+      background: #fff0f3;
+      transform: translateY(-2px);
+    }
+
+    /* Mini Game: Broken Heart Puzzle (Scene 4) */
+    .puzzle-board {
+      position: relative;
+      width: 100%;
+      height: 200px;
+      background: #fff5f8;
+      border-radius: 24px;
+      border: 2px dashed var(--soft-pink);
+      margin: 12px 0 16px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .center-target-heart {
+      font-size: 4.8rem;
+      filter: grayscale(1) opacity(0.3);
+      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .center-target-heart.repaired {
+      filter: grayscale(0) opacity(1) drop-shadow(0 0 25px rgba(255, 77, 109, 0.8));
+      animation: pulseRepaired 1.2s infinite alternate;
+    }
+    @keyframes pulseRepaired {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.22); }
+    }
+
+    .puzzle-piece {
+      position: absolute;
+      font-size: 2.2rem;
+      cursor: pointer;
+      filter: drop-shadow(0 4px 10px rgba(255, 77, 109, 0.4));
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      animation: floatPiece 2.5s ease-in-out infinite alternate;
+    }
+    .puzzle-piece:active {
+      transform: scale(1.3);
+    }
+    @keyframes floatPiece {
+      0% { transform: translateY(0) rotate(0deg); }
+      100% { transform: translateY(-12px) rotate(15deg); }
+    }
+
+    /* Runaway "NO" Button Section (Scene 5) */
+    .forgive-options-box {
+      position: relative;
+      min-height: 120px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    #forgive-btn-yes {
+      background: linear-gradient(120deg, #ff4d6d, #ff1a40);
+      font-size: 1.15rem;
+      padding: 16px 36px;
+      width: 100%;
+      box-shadow: 0 12px 30px rgba(255, 77, 109, 0.5);
+      animation: pulseYes 1.8s infinite;
+      transition: transform 0.25s ease;
+    }
+    @keyframes pulseYes {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    #runaway-no-btn {
+      position: relative;
+      background: #f8edeb;
+      color: #9d8189;
+      border: 2px dashed #d8b4bc;
+      font-size: 0.95rem;
+      padding: 12px 28px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 800;
+      white-space: nowrap;
+      transition: all 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+    }
+
+    /* Scene 6: Proposal Letter & Love Envelope */
+    .envelope-container {
+      background: #ffffff;
+      border: 2px solid var(--soft-pink);
+      border-radius: 24px;
+      padding: 22px 18px;
+      text-align: left;
+      box-shadow: 0 15px 35px rgba(255, 77, 109, 0.12);
+      position: relative;
+      margin: 12px 0 16px;
+    }
+    .envelope-stamp {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--primary-pink);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      transform: rotate(15deg);
+      box-shadow: 0 4px 10px rgba(255, 77, 109, 0.3);
+    }
+    .salutation {
+      font-family: 'Dancing Script', cursive;
+      font-size: 2.1rem;
+      color: var(--primary-dark);
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 12px;
+    }
+    .letter-body {
+      font-size: 0.94rem;
+      line-height: 1.7;
+      color: var(--text-dark);
+      font-weight: 600;
+    }
+    .letter-body strong {
+      color: var(--primary-dark);
+    }
+    .signature {
+      text-align: right;
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.9rem;
+      color: var(--primary-pink);
+      margin-top: 14px;
+    }
+
+    /* Ring Box Box */
+    .ring-box-card {
+      background: linear-gradient(135deg, #fff0f3, #ffe5ec);
+      border: 2px solid var(--soft-pink);
+      border-radius: 20px;
+      padding: 16px;
+      margin-bottom: 14px;
+      text-align: center;
+    }
+    .ring-icon {
+      font-size: 3.2rem;
+      display: inline-block;
+      animation: ringBounce 1.8s infinite ease-in-out;
+    }
+    @keyframes ringBounce {
+      0%, 100% { transform: scale(1) rotate(0deg); }
+      50% { transform: scale(1.18) rotate(10deg); filter: drop-shadow(0 0 15px rgba(255, 183, 3, 0.8)); }
+    }
+
+    /* Certificate Box (Appears after proposal acceptance) */
+    .certificate-card {
+      display: none;
+      background: #fff;
+      border: 3px double var(--gold);
+      border-radius: 20px;
+      padding: 18px 16px;
+      margin: 14px 0;
+      box-shadow: 0 10px 30px rgba(255, 183, 3, 0.25);
+    }
+    .cert-title {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.8rem;
+      color: var(--primary-dark);
+      font-weight: 700;
+    }
+    .cert-sub {
+      font-size: 0.82rem;
+      color: #666;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 10px;
+    }
+
+    /* Toast */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(40px);
+      background: rgba(89, 13, 34, 0.95);
+      color: #fff;
+      padding: 10px 22px;
+      border-radius: 999px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 1000;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    #toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Audio visualizer bar in HUD */
+    .music-waves {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      height: 12px;
+    }
+    .music-bar {
+      width: 2px;
+      height: 100%;
+      background: var(--primary-pink);
+      border-radius: 999px;
+      animation: musicBar 0.8s infinite ease-in-out alternate;
+    }
+    .music-bar:nth-child(2) { animation-delay: 0.2s; height: 60%; }
+    .music-bar:nth-child(3) { animation-delay: 0.4s; height: 80%; }
+    @keyframes musicBar {
+      0% { transform: scaleY(0.3); }
+      100% { transform: scaleY(1); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Ambient Particles Canvas -->
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- Top Game HUD -->
+  <header class="top-bar">
+    <div class="pill-badge">
+      <span>👑 For Simran</span>
+      <span style="opacity: 0.3">|</span>
+      <span id="chapter-label">Chapter 1/6</span>
+    </div>
+
+    <div class="progress-bar" id="p-bar">
+      <div class="p-dot active"></div>
+      <div class="p-dot"></div>
+      <div class="p-dot"></div>
+      <div class="p-dot"></div>
+      <div class="p-dot"></div>
+      <div class="p-dot"></div>
+    </div>
+
+    <button class="audio-btn" id="audio-toggle" title="Play / Mute Romantic Music" aria-label="Toggle Sound">
+      🎵
+    </button>
+  </header>
+
+  <!-- Game Main Card Viewport -->
+  <main class="game-card-wrapper">
+
+    <!-- ================= SCENE 1: THE TEARS (Wipe My Tears Game) ================= -->
+    <article class="scene-card active" id="scene-0">
+      <div class="chapter-tag">Level 1 • The Apology</div>
+      <h1 class="scene-title">Simran, Are You <span>Still Mad?</span> 🥺</h1>
+      <p class="scene-subtitle">Mohit has been crying non-stop since he hurt you...</p>
+
+      <!-- Sticker with Wipe Tears Interaction -->
+      <div class="sticker-box" id="sticker-box-1" onclick="handleTearWipe()">
+        <img 
+          class="sticker-img" 
+          id="mascot-img-1" 
+          src="https://media1.tenor.com/m/h9Xo5pUaBCEAAAAC/bubu-dudu-sad.gif" 
+          alt="Sad Crying Bubu Sticker"
+          onerror="this.src='https://media.tenor.com/images/3d7f02d41b61c16db3ee99ff8ee4cf01/tenor.gif';"
+        >
+        <!-- Floating Interactive Tears -->
+        <div class="tear-layer" id="tear-layer">
+          <span class="interactive-tear" style="left: 38px; top: 70px;">💧</span>
+          <span class="interactive-tear" style="right: 38px; top: 75px; animation-delay: 0.6s;">💧</span>
+        </div>
+        <div class="wipe-hint" id="wipe-hint">👆 Tap face to wipe tears! (<span id="wipe-count">3</span> left)</div>
+      </div>
+
+      <!-- Dialogue Bubble -->
+      <div class="speech-bubble" id="speech-bubble-1">
+        “Hey Simran... I know I messed up and hurt your sweet heart. I hate seeing you sad because of me.”
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-main" id="btn-next-1" onclick="nextScene(1)">
+          Hear What My Heart Says ➡️
+        </button>
+      </div>
+    </article>
+
+
+    <!-- ================= SCENE 2: THE TRUTH ================= -->
+    <article class="scene-card" id="scene-1">
+      <div class="chapter-tag">Level 2 • From The Bottom Of My Heart</div>
+      <h2 class="scene-title">I'm Truly <span>Sorry</span> 💔</h2>
+      <p class="scene-subtitle">Not just words... this is what Mohit feels inside.</p>
+
+      <!-- Pleading Sticker -->
+      <div class="sticker-box">
+        <img 
+          class="sticker-img" 
+          src="https://media1.tenor.com/m/tmsFuhB80VwAAAAC/bubu-dudu-bubu.gif" 
+          alt="Bubu Begging Pleading"
+          onerror="this.src='https://media1.tenor.com/m/T174xH54pE4AAAAC/bubu-dudu-flower.gif';"
+        >
+      </div>
+
+      <!-- Dialogue Bubble -->
+      <div class="speech-bubble">
+        “If I had a time machine, I'd undo every word and action that brought tears to your eyes. You mean the world to me.”
+      </div>
+
+      <!-- Emotional Quote -->
+      <div class="quote-box">
+        <div class="quote-badge">Mohit's Promise 💌</div>
+        <div class="quote-text">
+          “I don't have the power to erase yesterday, but I will spend every tomorrow making you smile, Simran.”
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-main" onclick="nextScene(2)">
+          Read My Soul's Shayari 🌹
+        </button>
+        <button class="btn-sub" onclick="nextScene(0)">⬅️ Back</button>
+      </div>
+    </article>
+
+
+    <!-- ================= SCENE 3: ENGLISH SHAYARI & POETRY ================= -->
+    <article class="scene-card" id="scene-2">
+      <div class="chapter-tag">Level 3 • Soul Poetry</div>
+      <h2 class="scene-title">Poetry For <span>Simran</span> ✨</h2>
+      <p class="scene-subtitle">Short heartfelt verses written for your soul...</p>
+
+      <!-- Romantic Flower Sticker -->
+      <div class="sticker-box">
+        <img 
+          class="sticker-img" 
+          src="https://media1.tenor.com/m/T174xH54pE4AAAAC/bubu-dudu-flower.gif" 
+          alt="Bubu Offering Flower Rose"
+          onerror="this.src='https://media1.tenor.com/m/AlZc5c9mG7AAAAAC/bubu-dudu-love.gif';"
+        >
+      </div>
+
+      <!-- 3 Romantic English Shayaris -->
+      <div class="quote-box">
+        <div class="quote-badge">🌹 Verse I</div>
+        <div class="quote-text">
+          “If a single tear of yours falls because of me, my whole world turns to dark rain. You are my only sunlight, Simran.”
+        </div>
+      </div>
+
+      <div class="quote-box">
+        <div class="quote-badge">💖 Verse II</div>
+        <div class="quote-text">
+          “I don’t want a fairytale without storms. I just want to be the one holding your hand through every single one.”
+        </div>
+      </div>
+
+      <div class="quote-box">
+        <div class="quote-badge">✨ Verse III</div>
+        <div class="quote-text">
+          “People search a lifetime for true love. I found mine in your smile, and I am never letting you go.”
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-main" onclick="nextScene(3)">
+          Fix Mohit's Broken Heart 🧩
+        </button>
+        <button class="btn-sub" onclick="nextScene(1)">⬅️ Back</button>
+      </div>
+    </article>
+
+
+    <!-- ================= SCENE 4: BROKEN HEART PUZZLE GAME ================= -->
+    <article class="scene-card" id="scene-3">
+      <div class="chapter-tag">Level 4 • Mini Game</div>
+      <h2 class="scene-title">Fix <span>Mohit's</span> Heart 🧩</h2>
+      <p class="scene-subtitle" id="puzzle-instruction">
+        Simran, tap the 4 floating pieces to put his heart back together!
+      </p>
+
+      <!-- Puzzle Board -->
+      <div class="puzzle-board" id="puzzle-board">
+        <div class="center-target-heart" id="center-heart">💔</div>
+        <!-- 4 Interactive Heart Pieces -->
+        <span class="puzzle-piece" id="p-piece-1" style="left: 18px; top: 22px;" onclick="collectPiece(1)">💖</span>
+        <span class="puzzle-piece" id="p-piece-2" style="right: 18px; top: 26px; animation-delay: 0.5s;" onclick="collectPiece(2)">💗</span>
+        <span class="puzzle-piece" id="p-piece-3" style="left: 28px; bottom: 20px; animation-delay: 0.9s;" onclick="collectPiece(3)">💓</span>
+        <span class="puzzle-piece" id="p-piece-4" style="right: 28px; bottom: 22px; animation-delay: 1.3s;" onclick="collectPiece(4)">💞</span>
+      </div>
+
+      <div class="speech-bubble" id="puzzle-speech">
+        “My heart broke when I saw you upset. Only your touch can heal it!”
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-main" id="btn-after-puzzle" style="display: none;" onclick="nextScene(4)">
+          Continue to the Big Question 🥺👉👈
+        </button>
+        <button class="btn-sub" onclick="nextScene(2)">⬅️ Back</button>
+      </div>
+    </article>
+
+
+    <!-- ================= SCENE 5: THE RUNAWAY 'NO' BUTTON ================= -->
+    <article class="scene-card" id="scene-4">
+      <div class="chapter-tag">Level 5 • The Big Decision</div>
+      <h2 class="scene-title">Will You <span>Forgive Me?</span> 🥺👉👈</h2>
+      <p class="scene-subtitle">Please say yes... Mohit really loves you!</p>
+
+      <!-- Pleading Cute Sticker -->
+      <div class="sticker-box">
+        <img 
+          class="sticker-img" 
+          id="mascot-img-forgive"
+          src="https://media1.tenor.com/m/h9Xo5pUaBCEAAAAC/bubu-dudu-sad.gif" 
+          alt="Bubu Waiting For Forgiveness"
+          onerror="this.src='https://media.tenor.com/images/3d7f02d41b61c16db3ee99ff8ee4cf01/tenor.gif';"
+        >
+      </div>
+
+      <div class="speech-bubble" id="forgive-speech">
+        “I promise to buy you chocolates, give you endless hugs, and never let you feel hurt again! ❤️”
+      </div>
+
+      <!-- Playful Decision Buttons -->
+      <div class="forgive-options-box">
+        <!-- Big Yes Button -->
+        <button class="btn-main" id="forgive-btn-yes" onclick="handleForgiveYes()">
+          YES, I FORGIVE YOU! 💖
+        </button>
+
+        <!-- Viral Runaway No Button -->
+        <button 
+          id="runaway-no-btn" 
+          onmouseover="dodgeNo()" 
+          ontouchstart="dodgeNo(event)"
+          onclick="dodgeNo(event)"
+        >
+          No, Still Mad 😤
+        </button>
+      </div>
+    </article>
+
+
+    <!-- ================= SCENE 6: THE GRAND PROPOSAL & FOREVER LETTER ================= -->
+    <article class="scene-card" id="scene-5">
+      <div class="chapter-tag">Level 6 • Forever & Always</div>
+      <h2 class="scene-title">Simran, My <span>Forever Love</span> 💍</h2>
+      <p class="scene-subtitle">A promise written in the stars, only for you...</p>
+
+      <!-- Celebrating Happy Hug / Kiss Sticker -->
+      <div class="sticker-box">
+        <img 
+          class="sticker-img" 
+          id="final-mascot-img"
+          src="https://media1.tenor.com/m/8n5vEom2aLIAAAAC/bubu-dudu-kiss.gif" 
+          alt="Bubu Dudu Kiss Hug Celebration"
+          onerror="this.src='https://media1.tenor.com/m/AlZc5c9mG7AAAAAC/bubu-dudu-love.gif';"
+        >
+      </div>
+
+      <!-- Ring Box Reveal -->
+      <div class="ring-box-card">
+        <div class="ring-icon">💍</div>
+        <h3 style="font-size: 1.3rem; color: var(--text-dark); font-weight: 800; margin-top: 4px;">
+          Will You Be Mine Forever, Simran?
+        </h3>
+        <p style="font-size: 0.85rem; color: var(--text-soft); margin-top: 4px; font-weight: 600;">
+          Through every fight, every laugh, and every dream.
+        </p>
+      </div>
+
+      <!-- Love Letter Envelope -->
+      <div class="envelope-container">
+        <div class="envelope-stamp">💖</div>
+        <div class="salutation">My Sweetest Simran,</div>
+
+        <div class="letter-body">
+          Thank you for forgiving me. You have the purest and kindest soul in this world. 
+          <br><br>
+          I might not be the most perfect person, but <strong>my love for you is 100% genuine and endless.</strong> 
+          You are my favorite notification, my comfort place, and the only person I want to hold hands with when I grow old.
+          <br><br>
+          I promise to protect your smile, to wipe your tears whenever life gets heavy, and to love you more with every heartbeat.
+        </div>
+
+        <div class="signature">
+          Yours & Only Yours,<br>
+          Mohit ❤️
+        </div>
+      </div>
+
+      <!-- Official Certificate Card -->
+      <div class="certificate-card" id="cert-card">
+        <div class="cert-title">Official Certificate of Love</div>
+        <div class="cert-sub">Permanently Awarded to Simran</div>
+        <p style="font-size: 0.92rem; color: #590d22; font-weight: 700; line-height: 1.5;">
+          This certifies that <strong>Simran</strong> has officially accepted <strong>Mohit's</strong> apology and lifetime love proposal with infinite hugs, forehead kisses, and zero expiry date! 🌹✨
+        </p>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-main" id="btn-final-accept" onclick="acceptProposal()">
+          💍 YES! I Am Yours Forever! 💖
+        </button>
+        <button class="btn-sub" onclick="nextScene(0)">
+          🔄 Play Our Story Again
+        </button>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- Interactive Toast Notification -->
+  <div id="toast">Simran ❤️ Mohit</div>
+
+  <!-- Sound, Animations & Game Engine -->
+  <script>
+    /* =======================================================================
+       1. SYNTHESIZED ROMANTIC BGM & SOUND EFFECTS (Zero audio file broken links!)
+       ======================================================================= */
+    class RomanticAudioEngine {
+      constructor() {
+        this.ctx = null;
+        this.isMuted = false;
+        this.bgmTimer = null;
+        this.step = 0;
+        this.isPlayingBGM = false;
+
+        // Beautiful romantic lofi piano chord progression in C/Am/F/G
+        this.melodyNotes = [
+          // Bar 1: Cmaj7
+          261.63, 329.63, 392.00, 493.88, 523.25, 392.00,
+          // Bar 2: Am7
+          220.00, 261.63, 329.63, 392.00, 440.00, 329.63,
+          // Bar 3: Fmaj7
+          174.61, 261.63, 329.63, 349.23, 440.00, 261.63,
+          // Bar 4: G7
+          196.00, 246.94, 293.66, 392.00, 493.88, 392.00
+        ];
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) {
+            this.ctx = new AudioContext();
+          }
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      startBGM() {
+        this.init();
+        if (this.isPlayingBGM || this.isMuted || !this.ctx) return;
+        this.isPlayingBGM = true;
+
+        const playNextNote = () => {
+          if (!this.isPlayingBGM || this.isMuted) return;
+          const freq = this.melodyNotes[this.step % this.melodyNotes.length];
+          this.playPianoNote(freq, 0.45);
+          this.step++;
+          this.bgmTimer = setTimeout(playNextNote, 320);
+        };
+        playNextNote();
+      }
+
+      stopBGM() {
+        this.isPlayingBGM = false;
+        if (this.bgmTimer) clearTimeout(this.bgmTimer);
+      }
+
+      playPianoNote(freq, duration = 0.5) {
+        if (this.isMuted || !this.ctx) return;
+        try {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+
+          // Soft warm piano envelope
+          gain.gain.setValueAtTime(0.001, this.ctx.currentTime);
+          gain.gain.linearRampToValueAtTime(0.08, this.ctx.currentTime + 0.04);
+          gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.start();
+          osc.stop(this.ctx.currentTime + duration);
+        } catch (e) {}
+      }
+
+      playCuteDing(freq = 659.25) {
+        this.init();
+        if (this.isMuted || !this.ctx) return;
+        try {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+          gain.gain.setValueAtTime(0.18, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.3);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + 0.3);
+        } catch (e) {}
+      }
+
+      playBoing() {
+        this.init();
+        if (this.isMuted || !this.ctx) return;
+        try {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(400, this.ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(120, this.ctx.currentTime + 0.22);
+          gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.22);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + 0.23);
+        } catch (e) {}
+      }
+
+      playFanfare() {
+        this.init();
+        const fanfareNotes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
+        fanfareNotes.forEach((f, i) => {
+          setTimeout(() => {
+            this.playCuteDing(f);
+          }, i * 90);
+        });
+      }
+
+      toggleAudio() {
+        this.isMuted = !this.isMuted;
+        if (this.isMuted) {
+          this.stopBGM();
+        } else {
+          this.startBGM();
+          this.playCuteDing(783.99);
+        }
+        return !this.isMuted;
+      }
+    }
+
+    const audio = new RomanticAudioEngine();
+
+    // Start audio on first user touch anywhere
+    window.addEventListener('click', () => {
+      audio.startBGM();
+    }, { once: true });
+    window.addEventListener('touchstart', () => {
+      audio.startBGM();
+    }, { once: true });
+
+    // Top Music Toggle Button
+    const audioBtn = document.getElementById('audio-toggle');
+    audioBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const active = audio.toggleAudio();
+      audioBtn.textContent = active ? '🎵' : '🔇';
+      showToast(active ? 'Romantic music playing 🎶' : 'Music muted 🔇');
+    });
+
+    /* =======================================================================
+       2. AMBIENT FLOATING HEARTS CANVAS
+       ======================================================================= */
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let cw = (canvas.width = window.innerWidth);
+    let ch = (canvas.height = window.innerHeight);
+
+    window.addEventListener('resize', () => {
+      cw = canvas.width = window.innerWidth;
+      ch = canvas.height = window.innerHeight;
+    });
+
+    class FloatingHeart {
+      constructor() {
+        this.reset();
+        this.y = Math.random() * ch;
+      }
+      reset() {
+        this.x = Math.random() * cw;
+        this.y = ch + 20 + Math.random() * 40;
+        this.size = 12 + Math.random() * 18;
+        this.speedY = 0.8 + Math.random() * 1.4;
+        this.speedX = (Math.random() - 0.5) * 0.7;
+        this.opacity = 0.25 + Math.random() * 0.45;
+        this.color = Math.random() > 0.3 ? '#ff758f' : '#ffb3c1';
+        this.angle = Math.random() * Math.PI * 2;
+        this.rotSpeed = (Math.random() - 0.5) * 0.02;
+      }
+      update() {
+        this.y -= this.speedY;
+        this.x += this.speedX + Math.sin(this.y * 0.015) * 0.4;
+        this.angle += this.rotSpeed;
+        if (this.y < -30) this.reset();
+      }
+      draw() {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.angle);
+        ctx.globalAlpha = this.opacity;
+        ctx.fillStyle = this.color;
+
+        const s = this.size;
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.bezierCurveTo(-s / 2, -s / 2, -s, s / 3, 0, s);
+        ctx.bezierCurveTo(s, s / 3, s / 2, -s / 2, 0, 0);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    const hearts = Array.from({ length: 32 }, () => new FloatingHeart());
+    function loopCanvas() {
+      ctx.clearRect(0, 0, cw, ch);
+      hearts.forEach(h => {
+        h.update();
+        h.draw();
+      });
+      requestAnimationFrame(loopCanvas);
+    }
+    loopCanvas();
+
+    /* =======================================================================
+       3. SCENE NAVIGATION & PROGRESS MANAGEMENT
+       ======================================================================= */
+    let curScene = 0;
+    const scenes = document.querySelectorAll('.scene-card');
+    const dots = document.querySelectorAll('.p-dot');
+    const chapterLabel = document.getElementById('chapter-label');
+
+    const sceneTitles = [
+      'Chapter 1/6 • The Apology',
+      'Chapter 2/6 • The Truth',
+      'Chapter 3/6 • Soul Poetry',
+      'Chapter 4/6 • Broken Heart',
+      'Chapter 5/6 • Forgiveness',
+      'Chapter 6/6 • Forever Yours'
+    ];
+
+    function nextScene(index) {
+      audio.startBGM();
+      audio.playCuteDing(783.99);
+
+      scenes[curScene].classList.remove('active');
+      curScene = index;
+      scenes[curScene].classList.add('active');
+
+      chapterLabel.textContent = sceneTitles[curScene];
+
+      dots.forEach((dot, i) => {
+        dot.classList.remove('active', 'passed');
+        if (i === curScene) {
+          dot.classList.add('active');
+        } else if (i < curScene) {
+          dot.classList.add('passed');
+        }
+      });
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* =======================================================================
+       4. SCENE 1: WIPE TEARS INTERACTION
+       ======================================================================= */
+    let wipesLeft = 3;
+    function handleTearWipe() {
+      if (wipesLeft <= 0) return;
+      wipesLeft--;
+
+      audio.playCuteDing(880 + (3 - wipesLeft) * 100);
+      document.getElementById('wipe-count').textContent = wipesLeft;
+
+      const bubble = document.getElementById('speech-bubble-1');
+
+      if (wipesLeft === 2) {
+        bubble.textContent = '“Sniff... thank you for gently wiping my tears, Simran... 🥺”';
+        showToast('Tears wiped gently... 💕');
+      } else if (wipesLeft === 1) {
+        bubble.textContent = '“Almost better... I just want to see you smile again!”';
+        showToast('Almost clean! ❤️');
+      } else if (wipesLeft === 0) {
+        // Completely wiped!
+        document.getElementById('tear-layer').style.display = 'none';
+        document.getElementById('wipe-hint').style.display = 'none';
+        document.getElementById('mascot-img-1').src = 'https://media1.tenor.com/m/tmsFuhB80VwAAAAC/bubu-dudu-bubu.gif';
+        bubble.textContent = '“Yay! My eyes are dry because of you! Please hear me out now... 💖”';
+        audio.playFanfare();
+        showToast('Tears are all wiped away! 🥰');
+      }
+    }
+
+    /* =======================================================================
+       5. SCENE 4: BROKEN HEART PUZZLE GAME
+       ======================================================================= */
+    let piecesCollected = 0;
+    function collectPiece(id) {
+      const piece = document.getElementById(`p-piece-${id}`);
+      if (!piece || piece.dataset.collected) return;
+      piece.dataset.collected = 'true';
+
+      piecesCollected++;
+      audio.playCuteDing(600 + piecesCollected * 120);
+
+      // Animation into center
+      piece.style.transform = 'scale(1.8) translateY(-30px)';
+      piece.style.opacity = '0';
+      piece.style.transition = 'all 0.35s ease';
+
+      showToast(`Piece ${piecesCollected}/4 snapped in! 🧩💖`);
+
+      if (piecesCollected >= 4) {
+        const centerHeart = document.getElementById('center-heart');
+        centerHeart.textContent = '💖';
+        centerHeart.classList.add('repaired');
+
+        document.getElementById('puzzle-speech').innerHTML = '“<strong>Simran, you healed my heart!</strong> It is now beating only for you!”';
+        document.getElementById('btn-after-puzzle').style.display = 'flex';
+        audio.playFanfare();
+        triggerConfetti(40);
+      }
+    }
+
+    /* =======================================================================
+       6. SCENE 5: RUNAWAY "NO" BUTTON (Viral Meme Mechanic)
+       ======================================================================= */
+    const runawayBtn = document.getElementById('runaway-no-btn');
+    const yesBtn = document.getElementById('forgive-btn-yes');
+    const forgiveSpeech = document.getElementById('forgive-speech');
+    const forgiveMascot = document.getElementById('mascot-img-forgive');
+
+    const runawayLines = [
+      'Are you sure? 🥺',
+      'Think again please! 😭',
+      'Look how sad Mohit is! 💔',
+      'Pretty please with chocolate? 🍫',
+      'Mohit loves you the most! 🥺',
+      'Don\'t break his little heart! 😿',
+      'Error 404: "No" is forbidden! 😜',
+      'Just click YES already! 🥰',
+      'I promise to be the best! 💍'
+    ];
+    let dodgeCounter = 0;
+
+    function dodgeNo(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      audio.playBoing();
+      dodgeCounter++;
+
+      // Change button text
+      const msg = runawayLines[dodgeCounter % runawayLines.length];
+      runawayBtn.textContent = msg;
+
+      // Random position shift within screen bounds
+      const randomX = (Math.random() - 0.5) * 200;
+      const randomY = (Math.random() - 0.5) * 80;
+      runawayBtn.style.transform = `translate(${randomX}px, ${randomY}px) scale(0.92)`;
+
+      // Make the YES button grow larger each time!
+      const scaleVal = 1 + Math.min(dodgeCounter * 0.06, 0.35);
+      yesBtn.style.transform = `scale(${scaleVal})`;
+
+      // Dynamic speech bubble reactions
+      if (dodgeCounter === 2) {
+        forgiveSpeech.textContent = '“Hey! You almost caught the No button! But Mohit won\'t let you stay mad! 😜”';
+      } else if (dodgeCounter === 4) {
+        forgiveSpeech.textContent = '“Look at that giant pink button! It\'s calling your name, Simran! 💖”';
+      }
+    }
+
+    function handleForgiveYes() {
+      audio.playFanfare();
+      triggerConfetti(80);
+      showToast('Yayyy! Simran forgave Mohit! 💖🥰');
+      setTimeout(() => {
+        nextScene(5);
+      }, 600);
+    }
+
+    /* =======================================================================
+       7. SCENE 6: ACCEPT PROPOSAL & CELEBRATION
+       ======================================================================= */
+    function acceptProposal() {
+      audio.playFanfare();
+      triggerConfetti(140);
+      showToast('💍 Sealed Forever! Mohit ❤️ Simran');
+
+      const cert = document.getElementById('cert-card');
+      cert.style.display = 'block';
+      cert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      const finalBtn = document.getElementById('btn-final-accept');
+      finalBtn.innerHTML = '💍 FOREVER & ALWAYS MOHIT & SIMRAN ❤️';
+      finalBtn.style.background = 'linear-gradient(120deg, #ff1744, #ff4081, #ffb703)';
+
+      // Switch sticker to pure love
+      document.getElementById('final-mascot-img').src = 'https://media1.tenor.com/m/AlZc5c9mG7AAAAAC/bubu-dudu-love.gif';
+
+      // Spawn extra floating hearts
+      for (let i = 0; i < 40; i++) {
+        hearts.push(new FloatingHeart());
+      }
+    }
+
+    /* =======================================================================
+       8. CONFETTI GENERATOR (Pure DOM, works 100% offline)
+       ======================================================================= */
+    function triggerConfetti(count = 50) {
+      const colors = ['#ff4d6d', '#ffb703', '#ff758f', '#ffccd5', '#06d6a0', '#fff'];
+      for (let i = 0; i < count; i++) {
+        const c = document.createElement('div');
+        c.style.position = 'fixed';
+        c.style.zIndex = '9999';
+        c.style.pointerEvents = 'none';
+        c.style.width = `${7 + Math.random() * 9}px`;
+        c.style.height = `${8 + Math.random() * 12}px`;
+        c.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        c.style.left = `${Math.random() * 100}vw`;
+        c.style.top = '-20px';
+        c.style.borderRadius = Math.random() > 0.4 ? '50%' : '2px';
+        c.style.transform = `rotate(${Math.random() * 360}deg)`;
+        c.style.transition = `transform ${2 + Math.random() * 2}s cubic-bezier(0.25, 1, 0.5, 1), top ${2 + Math.random() * 2}s linear, opacity 1s linear 1.5s`;
+
+        document.body.appendChild(c);
+
+        requestAnimationFrame(() => {
+          c.style.top = `${105 + Math.random() * 10}vh`;
+          c.style.transform = `rotate(${720 + Math.random() * 720}deg) translateX(${(Math.random() - 0.5) * 160}px)`;
+          c.style.opacity = '0';
+        });
+
+        setTimeout(() => c.remove(), 3800);
+      }
+    }
+
+    /* =======================================================================
+       9. TOAST NOTIFICATION HELPER
+       ======================================================================= */
+    const toastEl = document.getElementById('toast');
+    let toastTimeout;
+    function showToast(text) {
+      toastEl.textContent = text;
+      toastEl.classList.add('show');
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toastEl.classList.remove('show');
+      }, 2500);
+    }
+  </script>
+</body>
+</html>
